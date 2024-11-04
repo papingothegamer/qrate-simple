@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import {QRCodeCanvas} from 'qrcode.react';
+import QRCodeCanvas from 'qrcode.react';
 import { AlertCircle, Link as LinkIcon, Download } from 'lucide-react'
 
 // Background component for the gradient
