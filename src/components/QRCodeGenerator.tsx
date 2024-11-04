@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { QRCodeCanvas } from 'qrcode.react'
+import {QRCodeCanvas} from 'qrcode.react';
 import { AlertCircle, Link as LinkIcon, Download } from 'lucide-react'
 
 // Background component for the gradient
@@ -16,7 +16,7 @@ export default function QRCodeGenerator() {
   const [url, setUrl] = useState('')
   const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [error, setError] = useState('')
-  const qrRef = useRef<HTMLCanvasElement>(null)
+  const qrCodeRef = useRef<HTMLDivElement>(null)
 
   const generateQRCode = () => {
     if (isValidUrl(url)) {
@@ -38,15 +38,17 @@ export default function QRCodeGenerator() {
   }
 
   const downloadQRCode = () => {
-    if (qrRef.current) {
-      const canvas = qrRef.current
-      const image = canvas.toDataURL("image/png")
-      const link = document.createElement('a')
-      link.href = image
-      link.download = 'qrcode.png'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+    if (qrCodeRef.current) {
+      const canvas = qrCodeRef.current.querySelector('canvas')
+      if (canvas) {
+        const image = canvas.toDataURL("image/png")
+        const link = document.createElement('a')
+        link.href = image
+        link.download = 'qrcode.png'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
     }
   }
 
@@ -62,8 +64,6 @@ export default function QRCodeGenerator() {
           </h1>
           <p className="text-gray-600 mt-2">Generate QR codes instantly</p>
         </div>
-        {/* <h2 className="text-2xl font-bold text-center text-gray-800">QR Code Generator</h2>
-        <p className="text-center text-gray-600">Enter a URL to generate a QR code</p> */}
         
         <div className="space-y-4">
           <div className="flex gap-2">
@@ -91,13 +91,10 @@ export default function QRCodeGenerator() {
 
           {qrCodeUrl && (
             <div className="flex flex-col items-center gap-4">
-              <div className="relative bg-white p-4 rounded-lg">
+              <div ref={qrCodeRef} className="relative bg-white p-4 rounded-lg">
                 <QRCodeCanvas 
-                  ref={qrRef}
                   value={qrCodeUrl}
                   size={200}
-                  level="H"
-                  includeMargin={true}
                 />
                 <button
                   onClick={downloadQRCode}
