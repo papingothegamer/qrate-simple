@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import QRCodeCanvas from 'qrcode.react';
+import QRCode from 'qrcode.react';
 import { AlertCircle, Link as LinkIcon, Download } from 'lucide-react'
 
 // Background component for the gradient
@@ -89,26 +89,26 @@ export default function QRCodeGenerator() {
             </div>
           )}
 
-          {qrCodeUrl && (
-            <div className="flex flex-col items-center gap-4">
-              <div ref={qrCodeRef} className="relative bg-white p-4 rounded-lg">
-                <QRCodeCanvas 
-                  value={qrCodeUrl}
-                  size={200}
-                />
-                <button
-                  onClick={downloadQRCode}
-                  className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
-                >
-                  <Download size={20} className="text-gray-600" />
-                </button>
-              </div>
-              <p className="text-sm text-gray-500 flex items-center gap-1">
-                <LinkIcon size={16} />
-                {qrCodeUrl}
-              </p>
-            </div>
-          )}
+{qrCodeUrl && (
+  <div className="flex flex-col items-center gap-4">
+    <div ref={qrCodeRef} className="relative bg-white p-4 rounded-lg">
+      <QRCode
+        value={qrCodeUrl}
+        size={200}
+      />
+      <button
+        onClick={downloadQRCode}
+        className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+      >
+        <Download size={20} className="text-gray-600" />
+      </button>
+    </div>
+    <p className="text-sm text-gray-500 flex items-center gap-1">
+      <LinkIcon size={16} />
+      {qrCodeUrl}
+    </p>
+  </div>
+)}
         </div>
       </div>
     </div>
