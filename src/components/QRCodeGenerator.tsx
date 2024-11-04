@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import QRCode from 'qrcode.react';
+import QRCode from 'react-qr-code'; // Importing from react-qr-code
 import { AlertCircle, Link as LinkIcon, Download } from 'lucide-react'
+import { motion } from 'framer-motion'; // Importing motion from Framer Motion
 
 // Background component for the gradient
 function GradientBackground() {
@@ -14,17 +15,19 @@ function GradientBackground() {
 // Main QR code generator component
 export default function QRCodeGenerator() {
   const [url, setUrl] = useState('')
-  const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [error, setError] = useState('')
+  const [invalidAttemptCount, setInvalidAttemptCount] = useState(0) // Counter for invalid attempts
   const qrCodeRef = useRef<HTMLDivElement>(null)
+  const [qrCodeValue, setQRCodeValue] = useState<string | null>(null) // State to hold QR code value
 
   const generateQRCode = () => {
     if (isValidUrl(url)) {
-      setQrCodeUrl(url)
       setError('')
+      setQRCodeValue(url) // Set the QR code value if valid
+      setInvalidAttemptCount(0) // Reset the count
     } else {
       setError('Please enter a valid URL')
-      setQrCodeUrl('')
+      setInvalidAttemptCount(prev => prev + 1) // Increment the invalid attempt count
     }
   }
 
@@ -83,32 +86,38 @@ export default function QRCodeGenerator() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-500">
+            <motion.div
+              className="flex items-center gap-2 text-red-500"
+              initial={{ x: 0 }}
+              animate={{ x: invalidAttemptCount % 2 === 0 ? 0 : [-10, 10, -10, 10, 0] }} // Shake based on invalid attempts
+              transition={{ duration: 0.5 }}
+            >
               <AlertCircle size={20} />
               <span>{error}</span>
-            </div>
+            </motion.div>
           )}
 
-{qrCodeUrl && (
-  <div className="flex flex-col items-center gap-4">
-    <div ref={qrCodeRef} className="relative bg-white p-4 rounded-lg">
-      <QRCode
-        value={qrCodeUrl}
-        size={200}
-      />
-      <button
-        onClick={downloadQRCode}
-        className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
-      >
-        <Download size={20} className="text-gray-600" />
-      </button>
-    </div>
-    <p className="text-sm text-gray-500 flex items-center gap-1">
-      <LinkIcon size={16} />
-      {qrCodeUrl}
-    </p>
-  </div>
-)}
+          {qrCodeValue && (
+            <div className="flex flex-col items-center gap-4">
+              <div ref={qrCodeRef} className="relative bg-white p-4 rounded-lg">
+                <QRCode 
+                  value={qrCodeValue}
+                  size={200}
+                  style={{ width: '100%' }} // This keeps the QR code responsive
+                />
+                <button
+                  onClick={downloadQRCode}
+                  className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
+                >
+                  <Download size={20} className="text-gray-600" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 flex items-center gap-1">
+                <LinkIcon size={16} />
+                {qrCodeValue}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
