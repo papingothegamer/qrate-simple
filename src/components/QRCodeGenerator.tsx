@@ -116,20 +116,19 @@ export default function QRCodeGenerator() {
             </button>
           </div>
 
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                className="flex items-center gap-2 text-red-500"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AlertCircle size={20} />
-                <span>{error}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {error && (
+            <motion.div
+              key={invalidAttemptCount} // triggers re-animation on error update
+              className="flex items-center gap-2 text-red-500"
+              animate={{
+                x: [-5, 5, -5, 5, 0], // Shake effect
+                transition: { duration: 0.3 },
+              }}
+            >
+              <AlertCircle size={20} />
+              <span>{error}</span>
+            </motion.div>
+          )}
 
           <AnimatePresence>
             {qrCodeValue && (
